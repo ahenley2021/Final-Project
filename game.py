@@ -26,3 +26,16 @@ left = Room(0, 80, 45, 125)
 
 DISPLAYSURF = pygame.display.set_mode((400, 300), 0, 32)
 pygame.display.set_caption("Clue")
+
+def read_file():
+    f = open('hints.txt')
+    f.read()
+    f.close()
+
+def accuse_box():
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 16)
+    Surf = BASICFONT.render(text, 1, (0,0,0))
+    Rect = Surf.get_rect()
+    Rect.topleft = 345, 0
+    DISPLAYSURF.blit(Surf, Rect)
+    display_message("Accuse")
