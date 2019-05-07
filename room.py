@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-ROOM_BACKGROUND = pygame.image.load('resources/room_background.py')
+ROOM_BACKGROUND = pygame.image.load('resources/room_background.png')
 
 class Room(pygame.sprite.Sprite):
     def __init__(self, topLeftX, topLeftY, bottomRightX, bottomRightY):
