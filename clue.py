@@ -11,6 +11,7 @@ FPS = 10
 
 rooms = pygame.sprite.Group()
 
+accuse = Accuse()
 gardener = Character()
 
 tLeft = Room(10, 0, 80, 35)
@@ -28,6 +29,8 @@ left = Room(0, 80, 45, 125)
 DISPLAYSURF = pygame.display.set_mode((400, 300), 0, 32)
 pygame.display.set_caption("Clue")
 
+hint_time = pygame.time.get_ticks()
+
 num_moves = 0
 win = False
 game_over = False
@@ -44,16 +47,17 @@ def display_message(x, y):
     Rect.topleft = x, y
     DISPLAYSURF.blit(Surf, Rect)
 
-def accuse_box(345, 0):
+def accuse_box():
     display_message("Accuse")
 
 def beginning_hints(100, 5):
-    display_message("Mr. Lavisham was killed on Sunday. It is currently Monday morning.")
-    display_message("The suspects are: Alice, the maid; Gustav, the cook; George, the neighbor; or Lord Remington, Mr. Lavisham’s cat.")
-    display_message("One of the pans as well as a silver tray have gone missing since the murder.")
-    display_message("Both Alice and Gustav were petitioning for higher wages when Mr. Lavisham died.")
-    display_message("The cat seems to be wracked with guilt.")
-    display_message("The day before he died, Mr. Lavisham cut the branches off the neighbor’s tree because it was leaning over into his property.")
+    if hint_time > 120:
+        display_message("Mr. Lavisham was killed on Sunday. It is currently Monday morning.")
+        display_message("The suspects are: Alice, the maid; Gustav, the cook; George, the neighbor; or Lord Remington, Mr. Lavisham’s cat.")
+        display_message("One of the pans as well as a silver tray have gone missing since the murder.")
+        display_message("Both Alice and Gustav were petitioning for higher wages when Mr. Lavisham died.")
+        display_message("The cat seems to be wracked with guilt.")
+        display_message("The day before he died, Mr. Lavisham cut the branches off the neighbor’s tree because it was leaning over into his property.")
 
 def roll_dice():
     num_dice = random.randint(1, 7)
@@ -102,9 +106,26 @@ def is_collision():
     elif gardener.x >= 400 or gardener.x <= 0 or gardener.y >= 300 or gardener.y <= 0:
         game_over == True
 
-#game loop
-    #game_over = False
-    #game_over = True
-    #for event:
-        #key events
+While True:
+    if game_over == False:
+        read_file()
+        beginning_hints()
+        DISPLAYSURF.blit('resources/background.png')
+    if game_over == True:
+        win()
+        gardener.kill()
+        rooms.kill()
+        accuse.kill()
+    for even in pygame.event.get():
+        if event.type == KEYDOWN and event.key == K_UP:
+            gardener.up()
+        elif event.type == KEYDOWN and event.key == K_DOWN:
+            gardener.down()
+        elif event.type == KEYDOWN and event.key == K_RIGHT:
+            gardener.right()
+        elif event.type == KEYDOWN and event.key == K_LEFT:
+            gardener.left()
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
     #end it
