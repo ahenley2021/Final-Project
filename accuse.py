@@ -1,9 +1,12 @@
 import pygame
 from pygame.locals import *
 
+ACCUSE_BACKGROUND = pygame.image.load('resources/accuse_background.png')
+
 class Accuse(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, topLeftX, topLeftY, bottomRightX, bottomRightY):
         super().__init__()
-        self.x = 345
-        self.y = 0
-        self.rect = pygame.Rect(self.x, self.y, 55, 20)
+        self.x = topLeftX
+        self.y = topLeftY
+        self.image = ACCUSE_BACKGROUND
+        self.rect = pygame.Rect(self.x, self.y, bottomRightX, bottomRightY)
