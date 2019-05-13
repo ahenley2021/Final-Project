@@ -8,7 +8,7 @@ ground = 290
 class Character(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.x = 300
+        self.x = 250
         self.y = 370
         self.image = CHARACTER
         self.rect = pygame.Rect(self.x, self.y, 35, 25)

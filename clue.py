@@ -55,7 +55,7 @@ OPENING = pygame.image.load('resources/opening.png')
 opening_x = 0
 opening_y = 0
 
-hint_time = pygame.time.get_ticks()
+time = 0
 click = pygame.mouse.get_pos()[0]
 
 num_moves = 0
@@ -67,8 +67,8 @@ def read_file():
     f.read()
     f.close()
 
-def display_message(text, x, y):
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 16)
+def display_message(text, x, y, z):
+    BASICFONT = pygame.font.Font('freesansbold.ttf', z)
     Surf = BASICFONT.render(text, 1, (0,0,0))
     Rect = Surf.get_rect()
     Rect.topleft = x, y
@@ -78,14 +78,20 @@ def accuse_box():
     display_message("Accuse", 345, 0)
 
 def beginning_hints():
-    DISPLAYSURF.blit(OPENING(opening_x, opening_y))
-    if hint_time > 120:
-        display_message("Mr. Lavisham was killed on Sunday. It is currently Monday morning.", 345, 0)
-        display_message("The suspects are: Alice, the maid; Gustav, the cook; George, the neighbor; or Lord Remington, Mr. Lavisham’s cat.", 345, 3)
-        display_message("One of the pans as well as a silver tray have gone missing since the murder.", 345, 6)
-        display_message("Both Alice and Gustav were petitioning for higher wages when Mr. Lavisham died.", 345, 9)
-        display_message("The cat seems to be wracked with guilt.", 345, 12)
-        display_message("The day before he died, Mr. Lavisham cut the branches off the neighbor’s tree because it was leaning over into his property.", 345, 15)
+    DISPLAYSURF.blit(OPENING,(opening_x, opening_y))
+    if time <= 300:
+        display_message("Mr. Lavisham was killed on Sunday. It is currently Monday morning.", 50, 25, 11)
+        display_message("The suspects are: Alice, the maid; Gustav, the cook;", 50, 40, 11)
+        display_message("George, the neighbor; or Lord Remington, Mr. Lavisham’s cat.", 50, 50, 11)
+        display_message("One of the pans as well as a silver tray have gone missing", 50, 70, 11)
+        display_message("since the murder.", 50, 80, 11)
+        display_message("Both Alice and Gustav were petitioning for higher wages", 50, 90, 11)
+        display_message("when Mr. Lavisham died.", 50, 100, 11)
+        display_message("The cat seems to be wracked with guilt.", 50, 120, 11)
+        display_message("The day before he died, Mr. Lavisham cut the branches off", 50, 135, 11)
+        display_message("the neighbor’s tree because it was leaning over into his property.", 50, 145, 11)
+    else:
+        DISPLAYSURF.blit(BACKGROUND,(background_x, background_y))
 
 def roll_dice():
     num_dice = random.randint(1, 7)
@@ -99,12 +105,12 @@ def new_hint():
     f.seek(0)
     for line in lines:
         if chosen_hint == line:
-            display_message(line, 150, 150)
+            display_message(line, 150, 150, 11)
 
 def leave_room():
     display_message("Leave")
     if pygame.sprite.spritecollideany(click, Rect):
-        DISPLAYSURF.blit(BACKROUND(background_x, background_y))
+        DISPLAYSURF.blit(BACKROUND,(background_x, background_y))
         gardener.num_moves == 0
 
 def accuse_alice():
@@ -129,10 +135,10 @@ def win():
 def is_collision():
     global game_over
     if pygame.sprite.spritecollideany(click, rooms):
-        DISPLAYSURF.blit(ROOM_BACKROUND(room_background_x, room_background_x))
+        DISPLAYSURF.blit(ROOM_BACKROUND,(room_background_x, room_background_x))
         new_hint()
     elif pygame.sprite.spritecollideany(click, accuse_box):
-        DISPLAYSURF.blit(ACCUSE_BACKGROUND(accuse_background_x, accuse_background_y))
+        DISPLAYSURF.blit(ACCUSE_BACKGROUND,(accuse_background_x, accuse_background_y))
         accuse_alice()
         accuse_gustav()
         accuse_george()
@@ -142,16 +148,18 @@ def is_collision():
             win = True
         else:
             win = False
-            DISPLAYSURF.blit(BACKGROUND(background_x, background_y))
+            DISPLAYSURF.blit(BACKGROUND,(background_x, background_y))
             leave_room()
     elif gardener.x >= 400 or gardener.x <= 0 or gardener.y >= 300 or gardener.y <= 0:
         game_over == True
 
 while True:
+    DISPLAYSURF.blit(gardener.image,(gardener.rect.x, gardener.rect.y))
     if game_over == False:
         read_file()
         beginning_hints()
-        DISPLAYSURF.blit(BACKGROUND(background_x, background_y))
+        roll_dice()
+        time += 1
     if game_over == True:
         win()
         gardener.kill()
@@ -169,3 +177,4 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+    pygame.display.update()
