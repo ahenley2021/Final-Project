@@ -18,7 +18,7 @@ tLeft = Room(10, 0, 70, 35)
 tMid = Room(100, 0, 125, 40)
 tRight = Room(245, 0, 65, 25)
 
-rTop = Room(296, 654, 105, 106)
+rTop = Room(295, 65, 105, 110)
 rBottom = Room(335, 200, 65, 50)
 
 bRight = Room(150, 265, 90, 35)
@@ -61,6 +61,7 @@ click_x, click_y = pygame.mouse.get_pos()
 num_moves = 0
 win = False
 game_over = False
+is_accusing = False
 
 def read_file():
     f = open('hints.txt')
@@ -135,22 +136,23 @@ def win():
 
 def is_collision():
     global game_over
-    #print("uwu")
+    global is_accusing
     if time >= 300:
-        accuse_option()
-        if pygame.sprite.spritecollideany(gardener, rooms):
-            DISPLAYSURF.blit(ROOM_BACKROUND,(room_background_x, room_background_x))
-            new_hint()
-            leave_room()
-        elif pygame.sprite.collide_rect(gardener, accuse_box) and time < 1000000000:
+        if pygame.sprite.collide_rect(gardener, accuse_box):
+            is_accusing = True
             DISPLAYSURF.blit(ACCUSE_BACKGROUND, (accuse_background_x, accuse_background_y))
             accuse_cat()
             accuse_alice()
             accuse_gustav()
             accuse_george()
-
-        else:
-            win = False
+        elif is_accusing == False:
+            accuse_option()
+            if pygame.sprite.spritecollideany(gardener, rooms):
+                DISPLAYSURF.blit(ROOM_BACKROUND,(room_background_x, room_background_x))
+                new_hint()
+                leave_room()
+            else:
+                win = False
 
 while True:
     accuse_option()
@@ -174,6 +176,7 @@ while True:
             gardener.right()
         elif event.type == KEYDOWN and event.key == K_LEFT:
             gardener.left()
+        #if pygame.mouse.get_pos() ==
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
