@@ -61,12 +61,6 @@ click_x, click_y = pygame.mouse.get_pos()
 num_moves = 0
 win = False
 game_over = False
-is_accusing = False
-
-def read_file():
-    f = open('hints.txt')
-    f.read()
-    f.close()
 
 def display_message(text, x, y, z):
     BASICFONT = pygame.font.Font('freesansbold.ttf', z)
@@ -101,6 +95,8 @@ def roll_dice():
         num_dice = 0
 
 def new_hint():
+    f = open('hints.txt')
+    f.read()
     chosen_hint = random.randint(1, 14)
     f = open("hints.txt", "r")
     lines = f.readlines()
@@ -108,6 +104,7 @@ def new_hint():
     for line in lines:
         if chosen_hint == line:
             display_message(line, 150, 150, 11)
+            print("help")
         f.close()
 
 def leave_room():
@@ -123,30 +120,33 @@ def accuse_george():
     display_message("George", 175, 120, 11)
 
 def accuse_cat():
-    display_message("Lord Remington", 270, 120, 11)
+    display_message("The cat", 270, 120, 11)
 
 def question_box():
-    display_message("Who do you accuse?", 65, 35, 11)
+    display_message("Who do you accuse?", 65, 35, 14)
 
 def win():
     if win == True:
         display_message("You win!")
-    elif win == False:
-        display_message("You lost.")
 
 def is_collision():
     global game_over
-    global is_accusing
+    global accuse_box
     if time >= 300:
         if pygame.sprite.collide_rect(gardener, accuse_box):
-            is_accusing = True
             DISPLAYSURF.blit(ACCUSE_BACKGROUND, (accuse_background_x, accuse_background_y))
+            accuse_box = Accuse(0, 0, 400, 300)
+            question_box()
             accuse_cat()
             accuse_alice()
             accuse_gustav()
             accuse_george()
-        elif is_accusing == False:
-            accuse_option()
+        elif pygame.sprite.spritecollideany(gardener, accuse_options):
+            if pygame.sprite.collide_rect(gardener, george):
+                win = True
+                accuse_box = Accuse(345, 0, 55, 20)
+            else:
+                accuse_box = Accuse(345, 0, 55, 20)
             if pygame.sprite.spritecollideany(gardener, rooms):
                 DISPLAYSURF.blit(ROOM_BACKROUND,(room_background_x, room_background_x))
                 new_hint()
@@ -158,7 +158,6 @@ while True:
     accuse_option()
     is_collision()
     if game_over == False:
-        read_file()
         beginning_hints()
         DISPLAYSURF.blit(gardener.image,(gardener.rect.x, gardener.rect.y))
         time += 1
