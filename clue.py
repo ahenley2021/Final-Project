@@ -125,15 +125,18 @@ def accuse_cat():
 def question_box():
     display_message("Who do you accuse?", 65, 35, 14)
 
-def win():
-    if win == True:
-        display_message("You win!")
-
 def is_collision():
     global game_over
     global accuse_box
     if time >= 300:
-        if pygame.sprite.collide_rect(gardener, accuse_box):
+        if pygame.sprite.spritecollideany(gardener, rooms):
+            DISPLAYSURF.blit(ROOM_BACKROUND,(room_background_x, room_background_x))
+            new_hint()
+            leave_room()
+        else:
+            win = False
+            
+        if pygame.sprite.collide_rect(gardener, accuse_box) and not pygame.sprite.spritecollideany(gardener, accuse_options):
             DISPLAYSURF.blit(ACCUSE_BACKGROUND, (accuse_background_x, accuse_background_y))
             accuse_box = Accuse(0, 0, 400, 300)
             question_box()
@@ -141,18 +144,13 @@ def is_collision():
             accuse_alice()
             accuse_gustav()
             accuse_george()
-        elif pygame.sprite.spritecollideany(gardener, accuse_options):
-            if pygame.sprite.collide_rect(gardener, george):
+        elif pygame.sprite.spritecollideany(gardener, accuse_options) and not pygame.sprite.collide_rect(gardener, accuse_box):
+            if pygame.sprite.collidespritecollideany(gardener, george):
                 win = True
                 accuse_box = Accuse(345, 0, 55, 20)
+
             else:
                 accuse_box = Accuse(345, 0, 55, 20)
-            if pygame.sprite.spritecollideany(gardener, rooms):
-                DISPLAYSURF.blit(ROOM_BACKROUND,(room_background_x, room_background_x))
-                new_hint()
-                leave_room()
-            else:
-                win = False
 
 while True:
     accuse_option()
