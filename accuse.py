@@ -3,6 +3,7 @@ from pygame.locals import *
 
 ACCUSE_BACKGROUND = pygame.image.load('resources/accuse_background.png')
 
+#creates class for accusing screen
 class Accuse(pygame.sprite.Sprite):
     def __init__(self, topLeftX, topLeftY, bottomRightX, bottomRightY):
         super().__init__()

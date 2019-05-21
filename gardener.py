@@ -5,6 +5,7 @@ CHARACTER = pygame.image.load('resources/character.png')
 
 ground = 290
 
+#creates character class
 class Character(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -14,6 +15,7 @@ class Character(pygame.sprite.Sprite):
         self.rect = pygame.Rect(self.x, self.y, 5, 5)
         self.num_moves = 0
 
+#movement functions
     def up(self):
         self.rect.y -= 10
         self.num_moves += 1
