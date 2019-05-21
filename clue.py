@@ -55,6 +55,10 @@ OPENING = pygame.image.load('resources/opening.png')
 opening_x = 0
 opening_y = 0
 
+WIN_BACKGROUND = pygame.image.load('resources/win.png')
+win_x = 0
+win_y = 0
+
 time = 0
 click_x, click_y = pygame.mouse.get_pos()
 
@@ -135,8 +139,8 @@ def is_collision():
             leave_room()
         else:
             win = False
-            
-        if pygame.sprite.collide_rect(gardener, accuse_box) and not pygame.sprite.spritecollideany(gardener, accuse_options):
+
+        if pygame.sprite.collide_rect(gardener, accuse_box) and not pygame.sprite.spritecollideany(gardener, accuse_options) and not pygame.sprite.spritecollideany(gardener, rooms):
             DISPLAYSURF.blit(ACCUSE_BACKGROUND, (accuse_background_x, accuse_background_y))
             accuse_box = Accuse(0, 0, 400, 300)
             question_box()
@@ -145,10 +149,11 @@ def is_collision():
             accuse_gustav()
             accuse_george()
         elif pygame.sprite.spritecollideany(gardener, accuse_options) and not pygame.sprite.collide_rect(gardener, accuse_box):
-            if pygame.sprite.collidespritecollideany(gardener, george):
-                win = True
-                accuse_box = Accuse(345, 0, 55, 20)
-
+            if pygame.sprite.collide_rect(gardener, george) and not pygame.sprite.spritecollideany(gardener, rooms):
+                #accuse_box = Accuse(345, 0, 55, 20)
+                DISPLAYSURF.blit(WIN_BACKGROUND, (win_x, win_y))
+            elif pygame.sprite.spritecollideany(gardener, rooms) and pygame.sprite.spritecollide(gardener, accuse_options):
+                DISPLAYSURF.blit(ACCUSE_BACKGROUND, (accuse_background_x, accuse_background_y))
             else:
                 accuse_box = Accuse(345, 0, 55, 20)
 
