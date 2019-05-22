@@ -72,6 +72,7 @@ hint_time = 0
 num_moves = 0
 win = False
 game_over = False
+is_accusing = False
 
 #sets up font, etc
 def display_message(text, x, y, z):
@@ -101,15 +102,17 @@ def beginning_hints():
         display_message("the neighbor’s tree because it was leaning over into his property.", 50, 145, 11)
     else:
         DISPLAYSURF.blit(BACKGROUND,(background_x, background_y))
+        accuse_options.remove(alice, gustav, george, cat)
         is_collision()
+
+chosen_hint = random.randint(0, 12)
 
 #creates a new hint
 def new_hint():
     f = open("hints.txt", "r")
-    chosen_hint = random.randint(0, 12)
     lines = f.readlines()
     #print(len(lines))
-    display_message(lines[chosen_hint], 150, 150, 11)
+    display_message(lines[chosen_hint], 20, 150, 11)
     f.close()
 
 def leave_room():
@@ -135,13 +138,11 @@ def question_box():
 def is_collision():
     global game_over
     global accuse_box
+    global is_accusing
     if time >= 300:
         if pygame.sprite.spritecollideany(gardener, rooms):
             DISPLAYSURF.blit(ROOM_BACKROUND,(room_background_x, room_background_x))
-            #new_hint()
-            #leave_room()
-        #else:
-            #win = False
+            new_hint()
         elif pygame.sprite.collide_rect(gardener, accuse_box) and not pygame.sprite.spritecollideany(gardener, accuse_options):
             DISPLAYSURF.blit(ACCUSE_BACKGROUND, (accuse_background_x, accuse_background_y))
             accuse_box = Accuse(0, 0, 400, 300)
@@ -155,8 +156,10 @@ def is_collision():
                 for room in rooms:
                     rooms.remove(room)
             else:
-                for room in rooms:
-                    rooms.add(room)
+                is_accusing = False
+                rooms.add(tLeft, tMid, tRight, rTop, rBottom, bLeft, bRight, left)
+                for option in accuse_options:
+                    accuse_options.add(alice, gustav, george, cat)
         elif pygame.sprite.spritecollideany(gardener, accuse_options):
             if pygame.sprite.collide_rect(gardener, george):
                 #accuse_box = Accuse(345, 0, 55, 20)
