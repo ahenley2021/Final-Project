@@ -139,17 +139,24 @@ def is_collision():
         if pygame.sprite.spritecollideany(gardener, rooms):
             DISPLAYSURF.blit(ROOM_BACKROUND,(room_background_x, room_background_x))
             #new_hint()
-            leave_room()
-        else:
-            win = False
-        if pygame.sprite.collide_rect(gardener, accuse_box) and not pygame.sprite.spritecollideany(gardener, accuse_options) and not pygame.sprite.spritecollideany(gardener, rooms):
+            #leave_room()
+        #else:
+            #win = False
+        elif pygame.sprite.collide_rect(gardener, accuse_box) and not pygame.sprite.spritecollideany(gardener, accuse_options):
             DISPLAYSURF.blit(ACCUSE_BACKGROUND, (accuse_background_x, accuse_background_y))
             accuse_box = Accuse(0, 0, 400, 300)
-            question_box()
-            accuse_cat()
-            accuse_alice()
-            accuse_gustav()
-            accuse_george()
+            is_accusing = True
+            if is_accusing == True:
+                question_box()
+                accuse_cat()
+                accuse_alice()
+                accuse_gustav()
+                accuse_george()
+                for room in rooms:
+                    rooms.remove(room)
+            else:
+                for room in rooms:
+                    rooms.add(room)
         elif pygame.sprite.spritecollideany(gardener, accuse_options):
             if pygame.sprite.collide_rect(gardener, george):
                 #accuse_box = Accuse(345, 0, 55, 20)
