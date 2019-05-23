@@ -30,16 +30,15 @@ bLeft = Room(0, 230, 70, 70)
 
 left = Room(0, 80, 45, 45)
 
-alice = Accuse(0, 120, 77, 45)
+alice = Accuse(0, 120, 70, 95)
 gustav = Accuse(90, 120, 70, 95)
-george = Accuse(175, 120, 65, 95)
-cat = Accuse(270, 120, 65, 95)
+george = Accuse(175, 120, 70, 95)
+cat = Accuse(270, 120, 70, 95)
 
 accuse_box = Accuse(345, 0, 55, 20)
 
 #adds rooms/cards to sprite groups
 rooms.add(tLeft, tMid, tRight, rTop, rBottom, bLeft, bRight, left)
-accuse_options.add(alice, gustav, george, cat)
 
 #creates surf variable
 DISPLAYSURF = pygame.display.set_mode((400, 300), 0, 32)
@@ -83,7 +82,7 @@ def display_message(text, x, y, z):
     DISPLAYSURF.blit(Surf, Rect)
 
 #creates accuse button
-def accuse_option():
+def accuse_button():
     display_message("Accuse", 345, 0, 11)
 
 #displays hints
@@ -102,7 +101,6 @@ def beginning_hints():
         display_message("the neighbor’s tree because it was leaning over into his property.", 50, 145, 11)
     else:
         DISPLAYSURF.blit(BACKGROUND,(background_x, background_y))
-        accuse_options.remove(alice, gustav, george, cat)
         is_collision()
 
 chosen_hint = random.randint(0, 12)
@@ -111,14 +109,13 @@ chosen_hint = random.randint(0, 12)
 def new_hint():
     f = open("hints.txt", "r")
     lines = f.readlines()
-    #print(len(lines))
     display_message(lines[chosen_hint], 20, 150, 11)
     f.close()
 
 def leave_room():
     display_message("Leave", 345, 0, 11)
 
-#displays letters to accuse different suspects
+#displays words to accuse different suspects
 def accuse_alice():
     display_message("Alice", 0, 120, 11)
 
@@ -143,11 +140,25 @@ def is_collision():
         if pygame.sprite.spritecollideany(gardener, rooms):
             DISPLAYSURF.blit(ROOM_BACKROUND,(room_background_x, room_background_x))
             new_hint()
-        elif pygame.sprite.collide_rect(gardener, accuse_box) and not pygame.sprite.spritecollideany(gardener, accuse_options):
+            accuse_button()
+        elif pygame.sprite.spritecollideany(gardener, accuse_options):
+            print("accuse options")
+            if pygame.sprite.collide_rect(gardener, george):
+                print("yikes")
+                DISPLAYSURF.blit(WIN_BACKGROUND, (win_x, win_y))
+                win = True
+            else:
+                accuse_box = Accuse(345, 0, 55, 20)
+                DISPLAYSURF.blit(BACKGROUND, (background_x, background_y))
+                is_accusing = False
+                rooms.add(tLeft, tMid, tRight, rTop, rBottom, bLeft, bRight, left)
+                accuse_options.remove(alice, gustav, george, cat)
+        elif pygame.sprite.collide_rect(gardener, accuse_box):
             DISPLAYSURF.blit(ACCUSE_BACKGROUND, (accuse_background_x, accuse_background_y))
             accuse_box = Accuse(0, 0, 400, 300)
             is_accusing = True
             if is_accusing == True:
+                accuse_options.add(alice, gustav, george, cat)
                 question_box()
                 accuse_cat()
                 accuse_alice()
@@ -155,23 +166,10 @@ def is_collision():
                 accuse_george()
                 for room in rooms:
                     rooms.remove(room)
-            else:
-                is_accusing = False
-                rooms.add(tLeft, tMid, tRight, rTop, rBottom, bLeft, bRight, left)
-                for option in accuse_options:
-                    accuse_options.add(alice, gustav, george, cat)
-        elif pygame.sprite.spritecollideany(gardener, accuse_options):
-            if pygame.sprite.collide_rect(gardener, george):
-                #accuse_box = Accuse(345, 0, 55, 20)
-                DISPLAYSURF.blit(WIN_BACKGROUND, (win_x, win_y))
-                #print("why")
-                win = True
-            else:
-                accuse_box = Accuse(345, 0, 55, 20)
+
 
 #game loop
 while True:
-    accuse_option()
     is_collision()
     if game_over == False:
         beginning_hints()
