@@ -14,7 +14,6 @@ FPS = 10
 #creates sprite groups
 rooms = pygame.sprite.Group()
 accuse_options = pygame.sprite.Group()
-
 gardener = Character()
 
 #creates hitboxes for different rooms, accuse cards
